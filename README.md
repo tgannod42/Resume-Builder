@@ -1,6 +1,3 @@
-**Here’s a clean, professional **README.md** tailored to your assignment requirements. You can drop this straight into your GitHub repo and tweak names/details.
-
----
 
 # Resume Builder App
 
