@@ -57,7 +57,7 @@ Users can:
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 ### Frontend
 
@@ -80,7 +80,7 @@ Users can:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 resume-builder/
@@ -108,7 +108,7 @@ resume-builder/
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the Repository
 
@@ -131,7 +131,7 @@ Create a `.env` file in the root directory:
 GEMINI_API_KEY=your_api_key_here
 ```
 
-> ⚠️ This file is ignored by Git and should not be committed.
+>  This file is ignored by Git and should not be committed.
 
 ### 4. Start the Server
 
@@ -149,7 +149,7 @@ http://localhost:3000
 
 ---
 
-## 🤖 AI Usage Documentation
+##  AI Usage Documentation
 
 AI was used in the following ways:
 
@@ -166,7 +166,7 @@ AI was used in the following ways:
 
 ---
 
-## 🔐 Environment & Security
+##  Environment & Security
 
 * API keys are stored in `.env`
 * `.env` is included in `.gitignore`
@@ -175,7 +175,7 @@ AI was used in the following ways:
 
 ---
 
-## ♿ Accessibility
+##  Accessibility
 
 * Designed with accessibility as a priority
 * Tested using Lighthouse
@@ -188,7 +188,7 @@ AI was used in the following ways:
 
 ---
 
-## 📦 Libraries & Attribution
+##  Libraries & Attribution
 
 All external libraries are stored locally (no CDNs used).
 
@@ -200,7 +200,7 @@ A “Thank You” section is included in the app to credit:
 ---
 
 
-## 👤 Author
+## Author
 
 **Trey Gannod**
 
