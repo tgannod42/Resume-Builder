@@ -7,45 +7,47 @@
     <link href="./public/assets/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-dark">
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="card col-11 col-md-5" id="divStepUserInfo" style="font-size: large;">
+    <div class="container py-5">
+        <div class="progress mb-4" role="progressbar" aria-label="Wizard progress" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+            <div id="divProgressBar" class="progress-bar" style="width:33%">Progress</div>
+        </div>
+
+        <div class="card col-12 col-lg-8 mx-auto" id="divStepUserInfo">
             <div class="card-body p-4">
-                
-                <h2 class="text-center mb-2">RC Resume Builder</h2>
-                <h3 class="h5 text-center text-muted mb-4">Step 1: Personal Details</h3>
-                
-                <form id="frmUserInfo" novalidate>
-                    
-                    <label class="form-label" for="txtFirstName">First Name</label>
-                    <input class="form-control mb-3" id="txtFirstName" name="firstName" type="text" required aria-label="First Name">
-                    
-                    <label class="form-label" for="txtLastName">Last Name</label>
-                    <input class="form-control mb-3" id="txtLastName" name="lastName" type="text" required aria-label="Last Name">
-                    
-                    <label class="form-label" for="txtEmail">Email Address</label>
-                    <input class="form-control mb-3" id="txtEmail" name="email" type="email" required aria-label="Email Address">
-                    
-                    <label class="form-label" for="txtTargetRole">Target Role Title</label>
-                    <input class="form-control mb-2" id="txtTargetRole" name="targetRoleTitle" type="text" placeholder="e.g., Frontend Developer" required aria-label="Target Role Title">
-                    
-                    <hr class="my-4" />
-                    
-                    <button id="btnNextToJobs" class="btn btn-info col-12 fw-bold" type="submit">Next: Work Experience</button>
+                <h2 class="h4 text-center mb-3">Step 1: User Info</h2>
+                <form id="frmUserInfo">
+                    <input class="form-control mb-2" name="firstName" placeholder="First Name" required aria-label="First Name">
+                    <input class="form-control mb-2" name="lastName" placeholder="Last Name" required aria-label="Last Name">
+                    <input class="form-control mb-2" name="email" placeholder="Email" required type="email" aria-label="Email">
+                    <input class="form-control mb-2" name="geminiKey" placeholder="Gemini Key" aria-label="Gemini Key">
+                    <input class="form-control mb-3" name="targetRoleTitle" placeholder="Target Role Title" required aria-label="Target Role Title">
+                    <button class="btn btn-primary w-100" type="submit">Next</button>
                 </form>
-
             </div>
         </div>
-        
-        <div class="card col-11 col-md-5" style="display: none;" id="divStepJobs">
+
+        <div class="card col-12 col-lg-8 mx-auto d-none" id="divStepJobs">
             <div class="card-body p-4">
-                <h2 class="text-center mb-2">RC Resume Builder</h2>
-                <h3 class="h5 text-center text-muted mb-4">Step 2: Work Experience</h3>
-                <button id="btnBackToUserInfo" class="btn btn-secondary col-12 mt-2" type="button">Back</button>
+                <h2 class="h4 text-center mb-3">Step 2: Jobs</h2>
+                <form id="frmJobs">
+                    <div id="divJobsContainer"></div>
+                    <button id="btnAddJob" class="btn btn-outline-secondary w-100 mb-2" type="button">Add Another Job</button>
+                    <button class="btn btn-primary w-100" type="submit">Next</button>
+                </form>
             </div>
         </div>
 
+        <div class="card col-12 col-lg-8 mx-auto d-none" id="divStepResponsibilities">
+            <div class="card-body p-4">
+                <h2 class="h4 text-center mb-3">Step 3: Responsibilities & AI</h2>
+                <form id="frmResponsibilities">
+                    <div id="divResponsibilitiesContainer"></div>
+                    <button class="btn btn-success w-100" type="submit">Save Responsibilities</button>
+                </form>
+            </div>
+        </div>
     </div>
-    
+
     <script src="./public/assets/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="./public/js/app.js"></script>
 </body>
