@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Imprint Resumes SPA for building polished resumes with accessibility-first workflows." />
+    <title>Imprint Resumes</title>
+    <link rel="stylesheet" href="./public/assets/css/tailwind.css" />
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    <a
+      href="#mainContent"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-indigo-200 focus:px-4 focus:py-2 focus:text-slate-900"
+      >Skip to main content</a
+    >
+
+    <div class="flex min-h-screen flex-col md:flex-row">
+      <nav
+        class="w-full bg-slate-800 text-slate-50 md:min-h-screen md:w-72"
+        aria-label="Primary"
+      >
+        <div class="border-b border-slate-700 px-6 py-5">
+          <h1 class="text-2xl font-bold tracking-tight text-indigo-200">Imprint Resumes</h1>
+          <p class="mt-2 text-sm text-slate-300">Accessible resume creation, optimized for screen and print.</p>
+        </div>
+
+        <ul class="space-y-1 p-4" id="navList">
+          <li>
+            <button
+              type="button"
+              data-route="dashboard"
+              class="routeButton w-full rounded-md px-4 py-3 text-left text-sm font-medium text-slate-100 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              aria-label="Go to Dashboard overview"
+            >
+              Dashboard
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              data-route="experience"
+              class="routeButton w-full rounded-md px-4 py-3 text-left text-sm font-medium text-slate-100 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              aria-label="Go to Manage Experience"
+            >
+              Manage Experience
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              data-route="skills"
+              class="routeButton w-full rounded-md px-4 py-3 text-left text-sm font-medium text-slate-100 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              aria-label="Go to Manage Skills Certifications and Awards"
+            >
+              Manage Skills, Certifications &amp; Awards
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              data-route="builder"
+              class="routeButton w-full rounded-md px-4 py-3 text-left text-sm font-medium text-slate-100 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              aria-label="Go to Resume Builder"
+            >
+              Resume Builder
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              data-route="settings"
+              class="routeButton w-full rounded-md px-4 py-3 text-left text-sm font-medium text-slate-100 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              aria-label="Go to Settings for API key entry"
+            >
+              Settings
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <main id="mainContent" class="w-full p-6 md:p-10" tabindex="-1">
+        <section id="view-dashboard" data-view="dashboard" class="appView space-y-4" aria-labelledby="dashboardHeading">
+          <h2 id="dashboardHeading" class="text-3xl font-bold text-slate-800">Dashboard</h2>
+          <p class="max-w-3xl text-slate-700">
+            Welcome to Imprint Resumes. Use the navigation to manage your experience, curate skills and awards, and generate a tailored resume.
+          </p>
+        </section>
+
+        <section id="view-experience" data-view="experience" class="appView hidden space-y-4" aria-labelledby="experienceHeading">
+          <h2 id="experienceHeading" class="text-3xl font-bold text-slate-800">Manage Experience</h2>
+          <p class="text-slate-700">Add and refine your work history and responsibilities.</p>
+        </section>
+
+        <section id="view-skills" data-view="skills" class="appView hidden space-y-4" aria-labelledby="skillsHeading">
+          <h2 id="skillsHeading" class="text-3xl font-bold text-slate-800">Manage Skills, Certifications &amp; Awards</h2>
+          <p class="text-slate-700">Track strengths and recognitions to tailor each resume.</p>
+        </section>
+
+        <section id="view-builder" data-view="builder" class="appView hidden space-y-4" aria-labelledby="builderHeading">
+          <h2 id="builderHeading" class="text-3xl font-bold text-slate-800">Resume Builder</h2>
+          <p class="text-slate-700">Select relevant entries and generate your polished resume.</p>
+        </section>
+
+        <section id="view-settings" data-view="settings" class="appView hidden space-y-4" aria-labelledby="settingsHeading">
+          <h2 id="settingsHeading" class="text-3xl font-bold text-slate-800">Settings</h2>
+          <p class="text-slate-700">Save your Gemini API key locally for future AI enhancement actions.</p>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./public/js/app.js"></script>
+  </body>
+</html>
