@@ -13,17 +13,16 @@ const updateRouteStyles = (sActiveRoute) => {
     const bIsActive = oButton.dataset.route === sActiveRoute;
 
     oButton.setAttribute('aria-current', bIsActive ? 'page' : 'false');
-    oButton.classList.toggle('bg-indigo-200', bIsActive);
-    oButton.classList.toggle('text-slate-900', bIsActive);
-    oButton.classList.toggle('font-semibold', bIsActive);
-    oButton.classList.toggle('text-slate-100', !bIsActive);
+    oButton.classList.toggle('btn-info', bIsActive);
+    oButton.classList.toggle('text-dark', bIsActive);
+    oButton.classList.toggle('btn-outline-light', !bIsActive);
   });
 };
 
 const showView = (sRouteName) => {
   aDom.appViews.forEach((oView) => {
     const bShouldShow = oView.dataset.view === sRouteName;
-    oView.classList.toggle('hidden', !bShouldShow);
+    oView.classList.toggle('d-none', !bShouldShow);
   });
 
   aState.activeRoute = sRouteName;
