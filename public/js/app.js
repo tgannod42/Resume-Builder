@@ -1,147 +1,140 @@
 const aState = {
-    activeRoute: 'builder', // Defaulting to builder for development
-    resumeData: {}          // Object to collect data across the wizard steps
+    activeRoute: 'builder',
+    currentUserId: null,
+    currentResumeId: null,
+    aJobs: [],
+    aResponsibilities: []
 };
 
 const aDom = {
-    routeButtons: Array.from(document.querySelectorAll('.routeButton')),
-    appViews: Array.from(document.querySelectorAll('.appView')),
-    mainContent: document.getElementById('mainContent'),
-    
-    // Resume Builder Specific Elements
-    divProgressBar: document.getElementById('divProgressBar'),
     divStepUserInfo: document.getElementById('divStepUserInfo'),
     divStepJobs: document.getElementById('divStepJobs'),
+    divStepResponsibilities: document.getElementById('divStepResponsibilities'),
     frmUserInfo: document.getElementById('frmUserInfo'),
-    btnBackToUserInfo: document.getElementById('btnBackToUserInfo')
+    frmJobs: document.getElementById('frmJobs'),
+    btnAddJob: document.getElementById('btnAddJob'),
+    divJobsContainer: document.getElementById('divJobsContainer'),
+    frmResponsibilities: document.getElementById('frmResponsibilities'),
+    divResponsibilitiesContainer: document.getElementById('divResponsibilitiesContainer'),
+    divProgressBar: document.getElementById('divProgressBar')
 };
 
-/**
- * Updates the styling of the sidebar navigation buttons based on the active route.
- */
-const updateRouteStyles = (sActiveRoute) => {
-    aDom.routeButtons.forEach((oButton) => {
-        const bIsActive = oButton.dataset.route === sActiveRoute;
-        
-        oButton.setAttribute('aria-current', bIsActive ? 'page' : 'false');
-        oButton.classList.toggle('btn-info', bIsActive);
-        oButton.classList.toggle('text-dark', bIsActive);
-        oButton.classList.toggle('btn-outline-light', !bIsActive);
+const setProgress = (intPercent) => {
+    aDom.divProgressBar.style.width = `${intPercent}%`;
+    aDom.divProgressBar.setAttribute('aria-valuenow', String(intPercent));
+};
+
+const showStep = (strStepId) => {
+    [aDom.divStepUserInfo, aDom.divStepJobs, aDom.divStepResponsibilities].forEach((objCard) => {
+        objCard.classList.toggle('d-none', objCard.id !== strStepId);
     });
 };
 
-/**
- * Toggles the visibility of the main application views (Dashboard, Builder, Settings).
- */
-const showView = (sRouteName) => {
-    aDom.appViews.forEach((oView) => {
-        const bShouldShow = oView.dataset.view === sRouteName;
-        if (bShouldShow) {
-            oView.style.display = 'block';
-            oView.classList.remove('d-none');
-        } else {
-            oView.style.display = 'none';
-        }
-    });
-
-    aState.activeRoute = sRouteName;
-    updateRouteStyles(sRouteName);
-    aDom.mainContent.focus();
+const createJobRow = (intIndex) => {
+    const strJobHtml = `<div class="border rounded p-3 mb-3" data-job-index="${intIndex}">
+        <div class="mb-2"><label class="form-label">Company</label><input aria-label="Company Name" class="form-control" name="companyName" required /></div>
+        <div class="mb-2"><label class="form-label">Title</label><input aria-label="Job Title" class="form-control" name="jobTitle" required /></div>
+        <div class="mb-2"><label class="form-label">Start Date</label><input aria-label="Start Date" class="form-control" name="startDate" type="date" required /></div>
+        <div><label class="form-label">End Date</label><input aria-label="End Date" class="form-control" name="endDate" type="date" /></div>
+    </div>`;
+    aDom.divJobsContainer.insertAdjacentHTML('beforeend', strJobHtml);
 };
 
-/**
- * Handles the transition between steps within the Resume Builder wizard.
- */
-const showBuilderStep = (oStepToShow, oStepToHide, iProgressPercentage) => {
-    if (oStepToHide) oStepToHide.style.display = 'none';
-    if (oStepToShow) oStepToShow.style.display = 'block';
-    
-    // Update the progress bar ARIA values and visual width
-    if (aDom.divProgressBar) {
-        aDom.divProgressBar.style.width = `${iProgressPercentage}%`;
-        aDom.divProgressBar.setAttribute('aria-valuenow', iProgressPercentage);
-    }
-};
-
-/**
- * Processes the Step 1 form submission.
- * Uses async/await as per AGENTS.md guidelines.
- */
-const handleUserInfoSubmit = async (oEvent) => {
-    oEvent.preventDefault();
-    
-    const oForm = oEvent.target;
-    
-    // HTML5 Input Validation check
-    if (!oForm.checkValidity()) {
-        oForm.classList.add('was-validated');
-        return;
-    }
-
-    const oFormData = new FormData(oForm);
-    
-    // Extracting data using Hungarian Notation
-    const sFirstName = oFormData.get('firstName');
-    const sLastName = oFormData.get('lastName');
-    const sEmail = oFormData.get('email');
-    const sTargetRole = oFormData.get('targetRoleTitle');
-
-    // Store data in local state for final submission later
-    aState.resumeData.user = {
-        firstName: sFirstName,
-        lastName: sLastName,
-        email: sEmail,
-        targetRoleTitle: sTargetRole
+const handleUserSubmit = async (objEvent) => {
+    objEvent.preventDefault();
+    const objFormData = new FormData(aDom.frmUserInfo);
+    const objUserPayload = {
+        firstName: objFormData.get('firstName'),
+        lastName: objFormData.get('lastName'),
+        email: objFormData.get('email'),
+        geminiKey: objFormData.get('geminiKey')
     };
+    const strTargetRoleTitle = objFormData.get('targetRoleTitle');
 
-    console.log('Step 1 Validated & Saved:', aState.resumeData.user);
+    const objUserResponse = await fetch('/api/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(objUserPayload) });
+    const objUserResult = await objUserResponse.json();
+    aState.currentUserId = objUserResult.userId;
 
-    // Transition from Step 1 to Step 2, updating progress to 40%
-    showBuilderStep(aDom.divStepJobs, aDom.divStepUserInfo, 40);
+    const objResumeResponse = await fetch('/api/resumes', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userID: aState.currentUserId, targetRoleTitle: strTargetRoleTitle })
+    });
+    const objResumeResult = await objResumeResponse.json();
+    aState.currentResumeId = objResumeResult.resumeId;
+
+    showStep('divStepJobs');
+    setProgress(66);
 };
 
-/**
- * Handles returning to Step 1 from Step 2.
- */
-const handleBackToUserInfo = () => {
-    showBuilderStep(aDom.divStepUserInfo, aDom.divStepJobs, 20);
+const handleJobsSubmit = async (objEvent) => {
+    objEvent.preventDefault();
+    const aJobBlocks = Array.from(aDom.divJobsContainer.querySelectorAll('[data-job-index]'));
+    for (const objJobBlock of aJobBlocks) {
+        const objJobPayload = {
+            userID: aState.currentUserId,
+            companyName: objJobBlock.querySelector('[name="companyName"]').value,
+            jobTitle: objJobBlock.querySelector('[name="jobTitle"]').value,
+            startDate: objJobBlock.querySelector('[name="startDate"]').value,
+            endDate: objJobBlock.querySelector('[name="endDate"]').value
+        };
+        const objResponse = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(objJobPayload) });
+        const objResult = await objResponse.json();
+        aState.aJobs.push({ ...objJobPayload, jobID: objResult.jobId });
+    }
+
+    renderResponsibilities();
+    showStep('divStepResponsibilities');
+    setProgress(100);
 };
 
-/**
- * Binds sidebar navigation events.
- */
-const bindNavigation = () => {
-    aDom.routeButtons.forEach((oButton) => {
-        oButton.addEventListener('click', () => {
-            const sRouteName = oButton.dataset.route;
-            showView(sRouteName);
-        });
+const renderResponsibilities = () => {
+    aDom.divResponsibilitiesContainer.innerHTML = '';
+    aState.aJobs.forEach((objJob, intJobIndex) => {
+        const strCardHtml = `<div class="border rounded p-3 mb-3" data-res-job-index="${intJobIndex}">
+            <h4 class="h6">${objJob.companyName} - ${objJob.jobTitle}</h4>
+            <textarea aria-label="Responsibility Text" class="form-control mb-2" name="originalText" required></textarea>
+            <button type="button" class="btn btn-outline-primary btn-sm mb-2" data-action="ai">AI Suggest</button>
+            <div class="small text-success" data-ai-output></div>
+        </div>`;
+        aDom.divResponsibilitiesContainer.insertAdjacentHTML('beforeend', strCardHtml);
     });
 };
 
-/**
- * Binds internal Resume Builder events.
- */
-const bindBuilderEvents = () => {
-    if (aDom.frmUserInfo) {
-        aDom.frmUserInfo.addEventListener('submit', handleUserInfoSubmit);
-    }
-    
-    if (aDom.btnBackToUserInfo) {
-        aDom.btnBackToUserInfo.addEventListener('click', handleBackToUserInfo);
+const handleResponsibilitiesSubmit = async (objEvent) => {
+    objEvent.preventDefault();
+    const aResBlocks = Array.from(aDom.divResponsibilitiesContainer.querySelectorAll('[data-res-job-index]'));
+    for (const objResBlock of aResBlocks) {
+        const intJobIndex = Number(objResBlock.dataset.resJobIndex);
+        const strOriginalText = objResBlock.querySelector('[name="originalText"]').value;
+        const strAiText = objResBlock.querySelector('[data-ai-output]').textContent || null;
+        await fetch('/api/responsibilities', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobID: aState.aJobs[intJobIndex].jobID, resumeID: aState.currentResumeId, originalText: strOriginalText, aiText: strAiText, isApproved: strAiText ? 1 : 0 })
+        });
     }
 };
 
-/**
- * Application Entry Point
- */
-const initializeApplication = () => {
-    bindNavigation();
-    bindBuilderEvents();
-    
-    // Show the initial view based on state
-    showView(aState.activeRoute);
+const handleAiSuggestClick = async (objEvent) => {
+    const objButton = objEvent.target.closest('[data-action="ai"]');
+    if (!objButton) return;
+    const objResBlock = objButton.closest('[data-res-job-index]');
+    const strOriginalText = objResBlock.querySelector('[name="originalText"]').value;
+    const strGeminiKey = new FormData(aDom.frmUserInfo).get('geminiKey');
+    const objResponse = await fetch('/api/ai/suggest', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: strOriginalText, geminiKey: strGeminiKey })
+    });
+    const objResult = await objResponse.json();
+    objResBlock.querySelector('[data-ai-output]').textContent = objResult.aiText;
 };
 
-// Start the app
-initializeApplication();
+const initialize = () => {
+    createJobRow(0);
+    aDom.frmUserInfo.addEventListener('submit', handleUserSubmit);
+    aDom.frmJobs.addEventListener('submit', handleJobsSubmit);
+    aDom.frmResponsibilities.addEventListener('submit', handleResponsibilitiesSubmit);
+    aDom.btnAddJob.addEventListener('click', () => createJobRow(aDom.divJobsContainer.querySelectorAll('[data-job-index]').length));
+    aDom.divResponsibilitiesContainer.addEventListener('click', handleAiSuggestClick);
+};
+
+initialize();
