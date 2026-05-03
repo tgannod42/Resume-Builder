@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="RC Resumes SPA for building polished resumes with accessibility-first workflows." />
-    <title>RC Resumes</title>
+    <meta name="description" content="Imprint Resumes SPA for building polished resumes with accessibility-first workflows." />
+    <title>Imprint Resumes</title>
     <link rel="stylesheet" href="./public/assets/css/bootstrap.min.css" />
   </head>
   <body class="bg-body-tertiary">
@@ -14,8 +14,8 @@
       <div class="row min-vh-100">
         <nav class="col-12 col-md-3 col-lg-2 bg-dark text-light p-0" aria-label="Primary">
           <div class="border-bottom border-secondary px-4 py-4">
-            <h1 class="h3 mb-2 text-info-emphasis">RC Resumes</h1>
-            <p class="mb-0 small text-light-emphasis">Build, refine, and export your resume in a simple workflow.</p>
+            <h1 class="h3 mb-2 text-info-emphasis">Imprint Resumes</h1>
+            <p class="mb-0 small text-light-emphasis">Accessible resume creation, optimized for screen and print.</p>
           </div>
 
           <ul class="nav flex-column p-3 gap-2" id="navList">
@@ -32,7 +32,7 @@
             <div class="card shadow-sm">
               <div class="card-body">
                 <h2 id="dashboardHeading" class="card-title">Dashboard</h2>
-                <p class="card-text">Welcome to RC Resumes. Use the Resume Builder to enter your details, preview your resume text, and export it.</p>
+                <p class="card-text">Welcome to Imprint Resumes. Use the navigation to manage your experience, curate skills and awards, and generate a tailored resume.</p>
               </div>
             </div>
           </section>
@@ -46,57 +46,7 @@
           </section>
 
           <section id="view-builder" data-view="builder" class="appView d-none" aria-labelledby="builderHeading">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h2 id="builderHeading" class="card-title">Resume Builder</h2>
-                <p class="card-text mb-2">Complete the fields below to draft your resume content.</p>
-
-                <form id="frmResumeBuilder" class="d-flex flex-column gap-2" aria-label="Resume Builder Form">
-                  <div>
-                    <label for="txtFullName" class="form-label">Full Name</label>
-                    <input id="txtFullName" name="fullName" type="text" class="form-control" aria-label="Full Name" placeholder="Jane Doe" />
-                  </div>
-
-                  <div>
-                    <label for="txtEmail" class="form-label">Email</label>
-                    <input id="txtEmail" name="email" type="email" class="form-control" aria-label="Email" placeholder="jane@example.com" />
-                  </div>
-
-                  <div>
-                    <label for="txtPhone" class="form-label">Phone</label>
-                    <input id="txtPhone" name="phone" type="tel" class="form-control" aria-label="Phone" placeholder="(555) 555-5555" />
-                  </div>
-
-                  <div>
-                    <label for="txtSummary" class="form-label">Professional Summary</label>
-                    <textarea id="txtSummary" name="summary" class="form-control" aria-label="Professional Summary" rows="4" placeholder="Write a short professional summary"></textarea>
-                  </div>
-
-                  <div>
-                    <label for="txtExperience" class="form-label">Experience</label>
-                    <textarea id="txtExperience" name="experience" class="form-control" aria-label="Experience" rows="5" placeholder="List your job titles, employers, and achievements"></textarea>
-                  </div>
-
-                  <div>
-                    <label for="txtSkills" class="form-label">Skills</label>
-                    <textarea id="txtSkills" name="skills" class="form-control" aria-label="Skills" rows="3" placeholder="List your key skills"></textarea>
-                  </div>
-
-                  <div class="d-flex gap-2">
-                    <button id="btnBuildResume" type="button" class="btn btn-info text-dark" aria-label="Build Resume">Build Resume</button>
-                    <button id="btnAiSuggestions" type="button" class="btn btn-outline-light text-dark" aria-label="Get AI Suggestions">Get AI Suggestions</button>
-                    <button id="btnDownloadResume" type="button" class="btn btn-outline-light text-dark" aria-label="Download Resume as Text File">Download Resume TXT</button>
-                  </div>
-                </form>
-
-                <hr />
-
-                <div>
-                  <h3 class="h3">Resume Text Output</h3>
-                  <textarea id="txtResumeOutput" class="form-control" rows="10" aria-label="Resume Text Output" placeholder="Your generated resume text will appear here."></textarea>
-                </div>
-              </div>
-            </div>
+            <div class="card shadow-sm"><div class="card-body"><h2 id="builderHeading" class="card-title">Resume Builder</h2><p class="card-text">Select relevant entries and generate your polished resume.</p></div></div>
           </section>
 
           <section id="view-settings" data-view="settings" class="appView d-none" aria-labelledby="settingsHeading">
