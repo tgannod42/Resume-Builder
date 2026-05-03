@@ -1,62 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Imprint Resumes SPA for building polished resumes with accessibility-first workflows." />
-    <title>Imprint Resumes</title>
-    <link rel="stylesheet" href="./public/assets/css/bootstrap.min.css" />
-  </head>
-  <body class="bg-body-tertiary">
-    <a href="#mainContent" class="visually-hidden-focusable position-absolute top-0 start-0 m-3 p-2 bg-info text-dark rounded-2">Skip to main content</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RC Resume Builder</title>
+    <link href="./public/assets/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark">
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card col-11 col-md-5" id="divStepUserInfo" style="font-size: large;">
+            <div class="card-body p-4">
+                
+                <h2 class="text-center mb-2">RC Resume Builder</h2>
+                <h3 class="h5 text-center text-muted mb-4">Step 1: Personal Details</h3>
+                
+                <form id="frmUserInfo" novalidate>
+                    
+                    <label class="form-label" for="txtFirstName">First Name</label>
+                    <input class="form-control mb-3" id="txtFirstName" name="firstName" type="text" required aria-label="First Name">
+                    
+                    <label class="form-label" for="txtLastName">Last Name</label>
+                    <input class="form-control mb-3" id="txtLastName" name="lastName" type="text" required aria-label="Last Name">
+                    
+                    <label class="form-label" for="txtEmail">Email Address</label>
+                    <input class="form-control mb-3" id="txtEmail" name="email" type="email" required aria-label="Email Address">
+                    
+                    <label class="form-label" for="txtTargetRole">Target Role Title</label>
+                    <input class="form-control mb-2" id="txtTargetRole" name="targetRoleTitle" type="text" placeholder="e.g., Frontend Developer" required aria-label="Target Role Title">
+                    
+                    <hr class="my-4" />
+                    
+                    <button id="btnNextToJobs" class="btn btn-info col-12 fw-bold" type="submit">Next: Work Experience</button>
+                </form>
 
-    <div class="container-fluid min-vh-100">
-      <div class="row min-vh-100">
-        <nav class="col-12 col-md-3 col-lg-2 bg-dark text-light p-0" aria-label="Primary">
-          <div class="border-bottom border-secondary px-4 py-4">
-            <h1 class="h3 mb-2 text-info-emphasis">Imprint Resumes</h1>
-            <p class="mb-0 small text-light-emphasis">Accessible resume creation, optimized for screen and print.</p>
-          </div>
-
-          <ul class="nav flex-column p-3 gap-2" id="navList">
-            <li class="nav-item"><button type="button" data-route="dashboard" class="routeButton btn btn-outline-light w-100 text-start" aria-label="Go to Dashboard overview">Dashboard</button></li>
-            <li class="nav-item"><button type="button" data-route="experience" class="routeButton btn btn-outline-light w-100 text-start" aria-label="Go to Manage Experience">Manage Experience</button></li>
-            <li class="nav-item"><button type="button" data-route="skills" class="routeButton btn btn-outline-light w-100 text-start" aria-label="Go to Manage Skills Certifications and Awards">Manage Skills, Certifications &amp; Awards</button></li>
-            <li class="nav-item"><button type="button" data-route="builder" class="routeButton btn btn-outline-light w-100 text-start" aria-label="Go to Resume Builder">Resume Builder</button></li>
-            <li class="nav-item"><button type="button" data-route="settings" class="routeButton btn btn-outline-light w-100 text-start" aria-label="Go to Settings for API key entry">Settings</button></li>
-          </ul>
-        </nav>
-
-        <main id="mainContent" class="col-12 col-md-9 col-lg-10 p-4 p-lg-5" tabindex="-1">
-          <section id="view-dashboard" data-view="dashboard" class="appView" aria-labelledby="dashboardHeading">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h2 id="dashboardHeading" class="card-title">Dashboard</h2>
-                <p class="card-text">Welcome to Imprint Resumes. Use the navigation to manage your experience, curate skills and awards, and generate a tailored resume.</p>
-              </div>
             </div>
-          </section>
+        </div>
+        
+        <div class="card col-11 col-md-5" style="display: none;" id="divStepJobs">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-2">RC Resume Builder</h2>
+                <h3 class="h5 text-center text-muted mb-4">Step 2: Work Experience</h3>
+                <button id="btnBackToUserInfo" class="btn btn-secondary col-12 mt-2" type="button">Back</button>
+            </div>
+        </div>
 
-          <section id="view-experience" data-view="experience" class="appView d-none" aria-labelledby="experienceHeading">
-            <div class="card shadow-sm"><div class="card-body"><h2 id="experienceHeading" class="card-title">Manage Experience</h2><p class="card-text">Add and refine your work history and responsibilities.</p></div></div>
-          </section>
-
-          <section id="view-skills" data-view="skills" class="appView d-none" aria-labelledby="skillsHeading">
-            <div class="card shadow-sm"><div class="card-body"><h2 id="skillsHeading" class="card-title">Manage Skills, Certifications &amp; Awards</h2><p class="card-text">Track strengths and recognitions to tailor each resume.</p></div></div>
-          </section>
-
-          <section id="view-builder" data-view="builder" class="appView d-none" aria-labelledby="builderHeading">
-            <div class="card shadow-sm"><div class="card-body"><h2 id="builderHeading" class="card-title">Resume Builder</h2><p class="card-text">Select relevant entries and generate your polished resume.</p></div></div>
-          </section>
-
-          <section id="view-settings" data-view="settings" class="appView d-none" aria-labelledby="settingsHeading">
-            <div class="card shadow-sm"><div class="card-body"><h2 id="settingsHeading" class="card-title">Settings</h2><p class="card-text">Save your Gemini API key locally for future AI enhancement actions.</p></div></div>
-          </section>
-        </main>
-      </div>
     </div>
-
+    
     <script src="./public/assets/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="./public/js/app.js"></script>
-  </body>
+</body>
 </html>
