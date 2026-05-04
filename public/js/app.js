@@ -20,8 +20,10 @@ const aDom = {
     frmResponsibilities: document.getElementById('frmResponsibilities'),
     divResponsibilitiesContainer: document.getElementById('divResponsibilitiesContainer'),
     frmCredentials: document.getElementById('frmCredentials'),
+    divSkillsContainer: document.getElementById('divSkillsContainer'),
     divCertificationsContainer: document.getElementById('divCertificationsContainer'),
     divAwardsContainer: document.getElementById('divAwardsContainer'),
+    btnAddSkill: document.getElementById('btnAddSkill'),
     btnAddCertification: document.getElementById('btnAddCertification'),
     btnAddAward: document.getElementById('btnAddAward'),
     divProgressBar: document.getElementById('divProgressBar')
@@ -99,6 +101,13 @@ const createJobRow = (intIndex) => {
     </div>`);
 };
 
+const createSkillRow = () => {
+    aDom.divSkillsContainer.insertAdjacentHTML('beforeend', `<div class="border rounded p-3 mb-3" data-skill-row>
+        <div class="mb-2"><label class="form-label">Skill Category</label><input aria-label="Skill Category" class="form-control" name="categoryName" required /></div>
+        <div><label class="form-label">Skill Name</label><input aria-label="Skill Name" class="form-control" name="skillName" required /></div>
+    </div>`);
+};
+
 const createCertificationRow = () => {
     aDom.divCertificationsContainer.insertAdjacentHTML('beforeend', `<div class="border rounded p-3 mb-3" data-cert-row>
         <div class="mb-2"><label class="form-label">Certification Name</label><input aria-label="Certification Name" class="form-control" name="certName" /></div>
@@ -165,6 +174,14 @@ const handleResponsibilitiesSubmit = async (objEvent) => {
 const handleCredentialsSubmit = async (objEvent) => {
     objEvent.preventDefault();
 
+    const aSkillRows = Array.from(aDom.divSkillsContainer.querySelectorAll('[data-skill-row]'));
+    for (const objSkillRow of aSkillRows) {
+        const strCategoryName = (objSkillRow.querySelector('[name="categoryName"]').value || '').trim();
+        const strSkillName = (objSkillRow.querySelector('[name="skillName"]').value || '').trim();
+        if (!strCategoryName || !strSkillName) continue;
+        await fetch('/api/skills', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userID: aState.currentUserId, categoryName: strCategoryName, skillName: strSkillName }) });
+    }
+
     const aCertRows = Array.from(aDom.divCertificationsContainer.querySelectorAll('[data-cert-row]'));
     for (const objCertRow of aCertRows) {
         const strCertName = (objCertRow.querySelector('[name="certName"]').value || '').trim();
@@ -179,6 +196,22 @@ const handleCredentialsSubmit = async (objEvent) => {
         if (!strAwardTitle) continue;
         await fetch('/api/awards', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userID: aState.currentUserId, awardTitle: strAwardTitle, dateReceived: objAwardRow.querySelector('[name="dateReceived"]').value || null }) });
     }
+
+    const objExportResponse = await fetch(`/api/resumes/export?resumeID=${encodeURIComponent(aState.currentResumeId)}`);
+    const objExportResult = await objExportResponse.json();
+    if (!objExportResponse.ok) {
+        alert(objExportResult.error || 'Failed to export resume.');
+        return;
+    }
+
+    const strExportContent = JSON.stringify(objExportResult, null, 2);
+    const objBlob = new Blob([strExportContent], { type: 'application/json' });
+    const strUrl = URL.createObjectURL(objBlob);
+    const objDownloadLink = document.createElement('a');
+    objDownloadLink.href = strUrl;
+    objDownloadLink.download = `resume_${aState.currentResumeId}.json`;
+    objDownloadLink.click();
+    URL.revokeObjectURL(strUrl);
 };
 
 const handleAiSuggestClick = async (objEvent) => {
@@ -193,6 +226,7 @@ const handleAiSuggestClick = async (objEvent) => {
 
 const initialize = () => {
     createJobRow(0);
+    createSkillRow();
     createCertificationRow();
     createAwardRow();
     aDom.frmUserInfo.addEventListener('submit', handleUserSubmit);
@@ -200,6 +234,7 @@ const initialize = () => {
     aDom.frmResponsibilities.addEventListener('submit', handleResponsibilitiesSubmit);
     aDom.frmCredentials.addEventListener('submit', handleCredentialsSubmit);
     aDom.btnAddJob.addEventListener('click', () => createJobRow(aDom.divJobsContainer.querySelectorAll('[data-job-index]').length));
+    aDom.btnAddSkill.addEventListener('click', createSkillRow);
     aDom.btnAddCertification.addEventListener('click', createCertificationRow);
     aDom.btnAddAward.addEventListener('click', createAwardRow);
     aDom.divResponsibilitiesContainer.addEventListener('click', handleAiSuggestClick);
