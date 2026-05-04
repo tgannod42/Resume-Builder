@@ -10,6 +10,7 @@ const objResumeRoutes = require('./routes/resumeRoutes');
 const objAiRoutes = require('./routes/aiRoutes');
 const objCertificationRoutes = require('./routes/certificationRoutes');
 const objAwardRoutes = require('./routes/awardRoutes');
+const objSkillRoutes = require('./routes/skillRoutes');
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ objApp.use('/api/resumes', objResumeRoutes);
 objApp.use('/api/ai', objAiRoutes);
 objApp.use('/api/certifications', objCertificationRoutes);
 objApp.use('/api/awards', objAwardRoutes);
+objApp.use('/api/skills', objSkillRoutes);
 
 objApp.use((objReq, objRes) => {
     objRes.status(404).json({ error: 'Route not found.' });
