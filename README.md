@@ -1,3 +1,9 @@
+<!-- AI USAGE COMMENT BLOCK
+This file was reviewed with AI assistance. AI was used to draft and refine documentation wording,
+and to summarize how the resume builder's backend routes, controllers, and frontend flow work together.
+Final project-specific details should always be verified against the source code.
+-->
+
 # Resume Builder App
 
 A lightweight, local-first desktop/web application that helps students create, tailor, and export professional resumes — without fighting formatting.
