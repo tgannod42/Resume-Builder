@@ -1,9 +1,9 @@
 const express = require('express');
-const { createOrGetUser, getUsers } = require('../controllers/userController');
+const { createProfile, getUsers } = require('../controllers/userController');
 
 const objRouter = express.Router();
 
 objRouter.get('/', getUsers);
-objRouter.post('/', createOrGetUser);
+objRouter.post('/profile', createProfile);
 
 module.exports = objRouter;

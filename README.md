@@ -1,4 +1,3 @@
-
 # Resume Builder App
 
 A lightweight, local-first desktop/web application that helps students create, tailor, and export professional resumes — without fighting formatting.
@@ -16,6 +15,7 @@ Users can:
 
 ---
 
+## Features
 ## Features
 
 ### Resume Building
