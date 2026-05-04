@@ -1,38 +1,43 @@
-const express = require('express');
 const path = require('path');
+const express = require('express');
+const dotenv = require('dotenv');
 const { initializeDatabase } = require('./db/database');
 
 const objUserRoutes = require('./routes/userRoutes');
-const objResumeRoutes = require('./routes/resumeRoutes');
 const objJobRoutes = require('./routes/jobRoutes');
 const objResponsibilityRoutes = require('./routes/responsibilityRoutes');
+const objResumeRoutes = require('./routes/resumeRoutes');
 const objAiRoutes = require('./routes/aiRoutes');
 
+dotenv.config();
+
+const numPort = process.env.PORT || 3000;
 const objApp = express();
-const intPort = process.env.PORT || 3000;
 
 objApp.use(express.json());
 objApp.use('/public', express.static(path.join(__dirname, 'public')));
-objApp.use('/', express.static(__dirname));
+objApp.get('/', (objReq, objRes) => {
+    objRes.sendFile(path.join(__dirname, 'index.html'));
+});
 
 objApp.use('/api/users', objUserRoutes);
-objApp.use('/api/resumes', objResumeRoutes);
 objApp.use('/api/jobs', objJobRoutes);
 objApp.use('/api/responsibilities', objResponsibilityRoutes);
+objApp.use('/api/resumes', objResumeRoutes);
 objApp.use('/api/ai', objAiRoutes);
 
-objApp.get('/api/health', async (objReq, objRes) => {
-    return objRes.status(200).json([{ status: 'ok' }]);
+objApp.use((objReq, objRes) => {
+    objRes.status(404).json({ error: 'Route not found.' });
 });
 
 const startServer = async () => {
     try {
         await initializeDatabase();
-        objApp.listen(intPort, () => {
-            console.log(`RC Resume Builder server running on http://localhost:${intPort}`);
+        objApp.listen(numPort, () => {
+            console.log(`Resume Builder running on http://localhost:${numPort}`);
         });
     } catch (objError) {
-        console.error('Failed to start server:', objError.message);
+        console.error('Failed to start server:', objError);
         process.exit(1);
     }
 };
