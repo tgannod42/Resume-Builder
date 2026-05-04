@@ -1,3 +1,8 @@
+/* AI USAGE COMMENT BLOCK
+ * AI was used as a coding assistant for database initialization and persistence utilities in this file.
+ * It helped with drafting/refactoring code, naming cleanup, and basic validation/error-handling patterns.
+ * A developer reviewed and finalized the implementation for project-specific behavior.
+ */
 const sqlite3 = require('sqlite3').verbose();
 const { promisify } = require('util');
 const path = require('path');
