@@ -1,206 +1,103 @@
-
 # Resume Builder App
 
-A lightweight, local-first web application that helps students create, customize, and export professional resumes—without struggling with formatting.
+A local-first resume builder that helps students focus on content quality, tailoring, and fast export to PDF.
 
 ## Project Overview
 
-This project was developed for **CSC3100 – Web Development Final Project**. The goal is to shift the focus of resume building away from formatting and toward **content quality and customization**.
+This project was developed for **CSC3100 – Web Development Final Project**.
 
 Users can:
+- Store and manage jobs, responsibilities, skills, certifications, and awards.
+- Select targeted content for each resume version.
+- Generate a formatted resume preview and print/PDF output.
+- Get AI writing suggestions after entering details in form fields/sections.
 
-* Store job experiences, skills, certifications, and awards
-* Select specific items tailored to each job application
-* Generate a clean, formatted resume (web + print/PDF)
-* Receive AI-powered suggestions to improve content
+## Features
 
----
+### Resume Creation
+- Build resumes from saved profile data.
+- Select jobs, responsibilities, skills, certifications, and awards per resume.
+- Tailor content for different job applications.
 
-##  Features
+### Data Management (CRUD)
+- Jobs + responsibilities
+- Skills
+- Certifications
+- Awards
 
-###  Resume Creation
+### AI-Powered Suggestions
+- Uses **Google Gemini API** through `@google/generative-ai`.
+- Suggestions run after the user enters detail text (per-field/per-section workflow).
+- The user’s Gemini API key is stored in app data for reuse.
+- `dotenv` is used for local environment configuration.
 
-* Build resumes dynamically from stored data
-* Select which jobs, responsibilities, and skills to include
-* Tailor resumes for different applications
+### SPA + UI
+- Single-page app with `index.html` at project root.
+- Dynamic DOM updates using vanilla JavaScript.
+- Bootstrap 5 UI (locally bundled; no CDN).
 
-###  Data Management (CRUD)
+### Accessibility
+- WCAG-focused semantic structure and keyboard-friendly controls.
+- Responsive Bootstrap layout.
 
-* Jobs (with detailed responsibilities)
-* Skills (with categories)
-* Certifications
-* Awards
+### Resume Output
+- On-page preview.
+- Print-optimized output.
+- Export to PDF via browser print flow.
 
-###  AI-Powered Suggestions
+## Tech Stack
 
-* Uses **Google Gemini API** (user-provided key)
-* Reviews user-entered content
-* Suggests improvements for clarity, professionalism, and impact
+- **Frontend:** HTML5, Bootstrap 5, vanilla JavaScript (ES6+)
+- **Backend/API:** Node.js + Express
+- **Database:** SQLite (`dbResumes.db`)
+- **Desktop Path:** Electron (included in project plan and grading path)
+- **AI:** Google Gemini API via `@google/generative-ai`
+- **Config:** `dotenv`
 
-###  Single Page Application (SPA)
+## Real Project Structure
 
-* Built with a single `index.html`
-* Dynamic DOM updates (no page reloads)
-
-###  UI/UX & Accessibility
-
-* Clean, modern UI using **Bootstrap or Tailwind**
-* Fully accessible (target Lighthouse score ≥ 93)
-* Responsive design
-* Custom branding (name, icons, favicon)
-
-### 🖨 Resume Output
-
-* Web-based preview
-* Print-friendly layout
-* Export to PDF
-
----
-
-##  Tech Stack
-
-### Frontend
-
-* HTML5
-* CSS3 (Bootstrap or Tailwind)
-* Vanilla JavaScript (no frameworks)
-
-### Backend
-
-* Node.js
-* Express.js (REST API)
-
-### Database
-
-* SQLite (local storage)
-
-### AI Integration
-
-* Google Gemini API (user-provided key)
-
----
-
-##  Project Structure
-
-```
-resume-builder/
-│
-├── frontend/
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   └── assets/
-│
-├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   ├── db/
-│   └── server.js
-│
-├── database/
-│   └── sqlite.db
-│
-├── .env (ignored)
-├── .gitignore
-├── README.md
-└── package.json
+```text
+Resume-Builder/
+├── index.html
+├── server.js
+├── package.json
+├── dbResumes.db
+├── db/
+│   └── database.js
+├── controllers/
+├── routes/
+└── public/
+    ├── js/app.js
+    └── assets/
+        ├── css/bootstrap.min.css
+        └── js/bootstrap.bundle.min.js
 ```
 
----
+## Installation & Setup
 
-##  Installation & Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create `.env` in project root:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   PORT=3000
+   ```
+3. Start the app:
+   ```bash
+   npm start
+   ```
+4. Open:
+   ```
+   http://localhost:3000
+   ```
 
-### 1. Clone the Repository
-
-```bash
-git clone <your-repo-link>
-cd resume-builder
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Configure Environment Variables
-
-Create a `.env` file in the root directory:
-
-```
-GEMINI_API_KEY=your_api_key_here
-```
-
->  This file is ignored by Git and should not be committed.
-
-### 4. Start the Server
-
-```bash
-node server.js
-```
-
-### 5. Open the App
-
-Navigate to:
-
-```
-http://localhost:3000
-```
-
----
-
-##  AI Usage Documentation
-
-AI was used in the following ways:
-
-* Assisting with resume layout and print formatting
-* Generating prompt structures for content improvement
-* Debugging and refining backend/API logic
-
-### Key Notes:
-
-* All AI-generated code has been reviewed and understood
-* Comments are included in the code where AI assistance was used
-* Prompts and configurations are documented in `/docs/ai-usage.md`
-* AI was used in the development of this README.md
-
----
-
-##  Environment & Security
-
-* API keys are stored in `.env`
-* `.env` is included in `.gitignore`
-* Users provide their own Gemini API key
-* No sensitive data is committed to the repository
-
----
-
-##  Accessibility
-
-* Designed with accessibility as a priority
-* Tested using Lighthouse
-* Target score: **93+**
-* Includes:
-
-  * Semantic HTML
-  * Keyboard navigation
-  * Color contrast compliance
-
----
-
-##  Libraries & Attribution
-
-All external libraries are stored locally (no CDNs used).
-
-A “Thank You” section is included in the app to credit:
-
-* Bootstrap / Tailwind
-* Any additional libraries used
-
----
-
+## Security Notes
+- Do not commit API keys.
+- `.env`, local databases, and `node_modules` are ignored.
+- Users can provide and manage their Gemini key inside the application.
 
 ## Author
 
 **Trey Gannod**
-
