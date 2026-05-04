@@ -11,6 +11,8 @@ const aDom = {
     divStepJobs: document.getElementById('divStepJobs'),
     divStepResponsibilities: document.getElementById('divStepResponsibilities'),
     frmUserInfo: document.getElementById('frmUserInfo'),
+    btnUserSubmit: document.getElementById('btnUserSubmit'),
+    divUserFormErrors: document.getElementById('divUserFormErrors'),
     frmJobs: document.getElementById('frmJobs'),
     btnAddJob: document.getElementById('btnAddJob'),
     divJobsContainer: document.getElementById('divJobsContainer'),
@@ -30,6 +32,64 @@ const showStep = (strStepId) => {
     });
 };
 
+const setInputErrorState = (strFieldName, strMessage) => {
+    const objInput = aDom.frmUserInfo.querySelector(`[name="${strFieldName}"]`);
+    if (!objInput) return;
+
+    objInput.classList.add('is-invalid');
+    objInput.setAttribute('aria-invalid', 'true');
+
+    let objFeedback = document.getElementById(`err_${strFieldName}`);
+    if (!objFeedback) {
+        objFeedback = document.createElement('div');
+        objFeedback.id = `err_${strFieldName}`;
+        objFeedback.className = 'invalid-feedback';
+        objInput.insertAdjacentElement('afterend', objFeedback);
+    }
+    objFeedback.textContent = strMessage;
+    objInput.setAttribute('aria-describedby', objFeedback.id);
+};
+
+const resetUserFormErrors = () => {
+    aDom.divUserFormErrors.textContent = '';
+    aDom.divUserFormErrors.classList.add('d-none');
+    aDom.frmUserInfo.querySelectorAll('.is-invalid').forEach((objInput) => {
+        objInput.classList.remove('is-invalid');
+        objInput.removeAttribute('aria-invalid');
+    });
+};
+
+const validateUserForm = () => {
+    resetUserFormErrors();
+    const objFormData = new FormData(aDom.frmUserInfo);
+    const objPayload = {
+        firstName: (objFormData.get('firstName') || '').trim(),
+        lastName: (objFormData.get('lastName') || '').trim(),
+        email: (objFormData.get('email') || '').trim(),
+        geminiApiKey: (objFormData.get('geminiApiKey') || '').trim(),
+        desiredRole: (objFormData.get('desiredRole') || '').trim()
+    };
+
+    const aErrors = [];
+    if (!objPayload.firstName) aErrors.push({ field: 'firstName', message: 'First name is required.' });
+    if (!objPayload.lastName) aErrors.push({ field: 'lastName', message: 'Last name is required.' });
+    if (!objPayload.email) {
+        aErrors.push({ field: 'email', message: 'Email is required.' });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(objPayload.email)) {
+        aErrors.push({ field: 'email', message: 'Email format is invalid.' });
+    }
+    if (!objPayload.desiredRole) aErrors.push({ field: 'desiredRole', message: 'Desired role is required.' });
+
+    aErrors.forEach((objErr) => setInputErrorState(objErr.field, objErr.message));
+
+    if (aErrors.length > 0) {
+        aDom.divUserFormErrors.textContent = 'Please fix the highlighted fields before continuing.';
+        aDom.divUserFormErrors.classList.remove('d-none');
+    }
+
+    return { objPayload, isValid: aErrors.length === 0 };
+};
+
 const createJobRow = (intIndex) => {
     const strJobHtml = `<div class="border rounded p-3 mb-3" data-job-index="${intIndex}">
         <div class="mb-2"><label class="form-label">Company</label><input aria-label="Company Name" class="form-control" name="companyName" required /></div>
@@ -42,30 +102,37 @@ const createJobRow = (intIndex) => {
 
 const handleUserSubmit = async (objEvent) => {
     objEvent.preventDefault();
-    const objFormData = new FormData(aDom.frmUserInfo);
-    const objUserPayload = {
-        firstName: objFormData.get('firstName'),
-        lastName: objFormData.get('lastName'),
-        email: objFormData.get('email'),
-        geminiKey: objFormData.get('geminiKey')
-    };
-    const strTargetRoleTitle = objFormData.get('targetRoleTitle');
+    const { objPayload, isValid } = validateUserForm();
+    if (!isValid) return;
 
-    const objUserResponse = await fetch('/api/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(objUserPayload) });
-    const objUserResult = await objUserResponse.json();
-    aState.currentUserId = objUserResult.userId;
+    try {
+        aDom.btnUserSubmit.disabled = true;
+        const objUserResponse = await fetch('/api/users/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(objPayload)
+        });
 
-    const objResumeResponse = await fetch('/api/resumes', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userID: aState.currentUserId, targetRoleTitle: strTargetRoleTitle })
-    });
-    const objResumeResult = await objResumeResponse.json();
-    aState.currentResumeId = objResumeResult.resumeId;
+        const objResult = await objUserResponse.json();
+        if (!objUserResponse.ok) {
+            aDom.divUserFormErrors.textContent = objResult.error || 'Unable to save your profile.';
+            aDom.divUserFormErrors.classList.remove('d-none');
+            return;
+        }
 
-    showStep('divStepJobs');
-    setProgress(66);
+        aState.currentUserId = objResult.userId;
+        aState.currentResumeId = objResult.resumeId;
+        showStep('divStepJobs');
+        setProgress(66);
+    } catch (objError) {
+        aDom.divUserFormErrors.textContent = 'Network error while saving profile. Please try again.';
+        aDom.divUserFormErrors.classList.remove('d-none');
+    } finally {
+        aDom.btnUserSubmit.disabled = false;
+    }
 };
 
+// Remaining flow stays the same and uses the IDs returned by the new profile endpoint.
 const handleJobsSubmit = async (objEvent) => {
     objEvent.preventDefault();
     const aJobBlocks = Array.from(aDom.divJobsContainer.querySelectorAll('[data-job-index]'));
@@ -119,7 +186,7 @@ const handleAiSuggestClick = async (objEvent) => {
     if (!objButton) return;
     const objResBlock = objButton.closest('[data-res-job-index]');
     const strOriginalText = objResBlock.querySelector('[name="originalText"]').value;
-    const strGeminiKey = new FormData(aDom.frmUserInfo).get('geminiKey');
+    const strGeminiKey = new FormData(aDom.frmUserInfo).get('geminiApiKey');
     const objResponse = await fetch('/api/ai/suggest', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: strOriginalText, geminiKey: strGeminiKey })
