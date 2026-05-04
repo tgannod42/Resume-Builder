@@ -1,206 +1,263 @@
 
 # Resume Builder App
 
-A lightweight, local-first web application that helps students create, customize, and export professional resumes—without struggling with formatting.
+A lightweight, local-first desktop/web application that helps students create, tailor, and export professional resumes — without fighting formatting.
 
 ## Project Overview
 
-This project was developed for **CSC3100 – Web Development Final Project**. The goal is to shift the focus of resume building away from formatting and toward **content quality and customization**.
+Built for **CSC3100 – Web Development Final Project**. The goal is to shift the focus of resume building away from formatting and toward **content quality and per-application customization**.
 
 Users can:
 
-* Store job experiences, skills, certifications, and awards
-* Select specific items tailored to each job application
-* Generate a clean, formatted resume (web + print/PDF)
-* Receive AI-powered suggestions to improve content
+* Store jobs (with responsibilities), skills (with categories), certifications, and awards
+* Select which items to include for each tailored resume
+* Generate a clean web preview, a print-friendly layout, and an exportable PDF
+* Get AI-powered suggestions on the content they enter via the Google Gemini API (using their own key)
 
 ---
 
-##  Features
+## Features
 
-###  Resume Creation
+### Resume Building
 
-* Build resumes dynamically from stored data
-* Select which jobs, responsibilities, and skills to include
-* Tailor resumes for different applications
+* Reusable "data library": add jobs, responsibilities, skills, certifications, and awards once
+* Per-resume selection — pick which jobs/responsibilities/skills/certs/awards appear on each version
+* Tailor a different resume for each job application from the same underlying data
 
-###  Data Management (CRUD)
+### Data Management (CRUD via REST)
 
 * Jobs (with detailed responsibilities)
-* Skills (with categories)
+* Skills (grouped by category)
 * Certifications
 * Awards
+* Resumes (target role + selected items)
 
-###  AI-Powered Suggestions
+### AI-Powered Suggestions
 
-* Uses **Google Gemini API** (user-provided key)
-* Reviews user-entered content
-* Suggests improvements for clarity, professionalism, and impact
+* Uses the **Google Gemini API** (Free Tier suggested for development)
+* Triggered after the user enters details for a section, returning suggested rewrites for clarity, professionalism, and impact
+* Users supply their **own Gemini API key**, stored locally in the app's database — no key is bundled or deployed with the app
 
-###  Single Page Application (SPA)
+### Single Page Application (SPA)
 
-* Built with a single `index.html`
-* Dynamic DOM updates (no page reloads)
+* One `index.html`; views are shown/hidden via DOM manipulation in vanilla JS
+* No frameworks (no React, no Vue, no SSR/MVC server-rendered templates)
 
-###  UI/UX & Accessibility
+### UI / UX & Accessibility
 
-* Clean, modern UI using **Bootstrap or Tailwind**
-* Fully accessible (target Lighthouse score ≥ 93)
-* Responsive design
-* Custom branding (name, icons, favicon)
+* Bootstrap 5 utility classes for layout, spacing, and color
+* WCAG 2.1+ targets: semantic HTML, ARIA labels on form controls, alt text on images, keyboard navigation
+* Lighthouse Accessibility score target **≥ 93** (screenshot included with submission)
+* Responsive layout
+* Custom branding: app name, favicon, and additional icons
 
-### 🖨 Resume Output
+### Resume Output
 
-* Web-based preview
-* Print-friendly layout
-* Export to PDF
+* Web preview rendered from selected items
+* Print-friendly layout via a dedicated `@media print` stylesheet
+* PDF export (browser print-to-PDF and/or Electron `webContents.printToPDF`)
+
+### Desktop Packaging
+
+* Wrapped as an **ElectronJS** desktop app so users can run it locally without standing up a separate server
 
 ---
 
-##  Tech Stack
+## Tech Stack
 
 ### Frontend
-
 * HTML5
-* CSS3 (Bootstrap or Tailwind)
-* Vanilla JavaScript (no frameworks)
+* CSS3 + Bootstrap 5 (installed locally — no CDNs)
+* Vanilla JavaScript (ES6+, no frameworks)
 
 ### Backend
-
 * Node.js
-* Express.js (REST API)
+* Express.js (RESTful API under `/api/`)
 
 ### Database
-
-* SQLite (local storage)
+* SQLite (via `sqlite3` driver)
 
 ### AI Integration
+* Google Generative AI SDK (`@google/generative-ai`) — Gemini API
 
-* Google Gemini API (user-provided key)
+### Desktop Shell
+* Electron
+
+### Configuration
+* `dotenv` for development-time environment variables (`.env` is gitignored)
 
 ---
 
-##  Project Structure
+## Project Structure
 
 ```
-resume-builder/
-│
-├── frontend/
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   └── assets/
-│
-├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   ├── db/
-│   └── server.js
-│
-├── database/
-│   └── sqlite.db
-│
-├── .env (ignored)
+Resume-Builder/
+├── index.html                # SPA entry point
+├── server.js                 # Express entry point (TODO)
+├── electron.js               # Electron main process (TODO)
+├── package.json
 ├── .gitignore
+├── .env.example              # Template for required env vars (TODO)
 ├── README.md
-└── package.json
+├── AGENTS.md                 # Coding conventions for the project
+├── dbResumes.db              # SQLite database (gitignored once created at runtime)
+│
+├── api/                      # Express route handlers (TODO)
+│   ├── users.js
+│   ├── resumes.js
+│   ├── jobs.js
+│   ├── responsibilities.js
+│   ├── skills.js
+│   ├── certifications.js
+│   ├── awards.js
+│   └── ai.js
+│
+├── db/                       # SQLite setup + schema (TODO)
+│   ├── connection.js
+│   └── schema.sql
+│
+├── public/                   # Static frontend assets
+│   ├── js/
+│   │   └── app.js
+│   ├── css/                  # Custom CSS overrides (TODO)
+│   ├── assets/
+│   │   ├── css/bootstrap.min.css
+│   │   ├── js/bootstrap.bundle.min.js
+│   │   └── img/              # Logo, favicon, icons (TODO)
+│   └── views/                # HTML partials loaded dynamically (TODO)
+│
+└── docs/
+    ├── ai-usage.md           # Required AI documentation (TODO)
+    └── lighthouse.png        # Accessibility score screenshot (TODO)
 ```
 
 ---
 
-##  Installation & Setup
+## Installation & Setup
 
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone <your-repo-link>
-cd resume-builder
+git clone https://github.com/tgannod42/Resume-Builder.git
+cd Resume-Builder
 ```
 
-### 2. Install Dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure Environment Variables
+### 3. Configure environment variables (development only)
 
-Create a `.env` file in the root directory:
+Copy `.env.example` to `.env` and fill in your dev key:
 
 ```
-GEMINI_API_KEY=your_api_key_here
+GEMINI_API_KEY=your_dev_key_here
+PORT=3000
 ```
 
->  This file is ignored by Git and should not be committed.
+> `.env` is gitignored. End users supply their own Gemini key inside the app — no key ships with the build.
 
-### 4. Start the Server
+### 4. Run the app
+
+Web mode (browser):
 
 ```bash
-node server.js
+npm start
+# then open http://localhost:3000
 ```
 
-### 5. Open the App
+Desktop mode (Electron):
 
-Navigate to:
-
-```
-http://localhost:3000
+```bash
+npm run electron
 ```
 
 ---
 
-##  AI Usage Documentation
+## API Overview
 
-AI was used in the following ways:
+All routes live under `/api/` and follow the conventions in `AGENTS.md`:
 
-* Assisting with resume layout and print formatting
-* Generating prompt structures for content improvement
-* Debugging and refining backend/API logic
+* `GET` returns JSON arrays
+* `POST` accepts JSON bodies for create
+* `PUT` for updates (no PATCH)
+* `DELETE` uses URL parameters for the primary key
+* `GET` filters use query strings
+* All inputs are validated; all DB calls use prepared statements
 
-### Key Notes:
-
-* All AI-generated code has been reviewed and understood
-* Comments are included in the code where AI assistance was used
-* Prompts and configurations are documented in `/docs/ai-usage.md`
-* AI was used in the development of this README.md
-
----
-
-##  Environment & Security
-
-* API keys are stored in `.env`
-* `.env` is included in `.gitignore`
-* Users provide their own Gemini API key
-* No sensitive data is committed to the repository
+| Resource          | Endpoints                                                                 |
+|-------------------|---------------------------------------------------------------------------|
+| Users             | `GET/POST/PUT /api/users`, `DELETE /api/users/:id`                        |
+| Resumes           | `GET/POST/PUT /api/resumes`, `DELETE /api/resumes/:id`                    |
+| Jobs              | `GET/POST/PUT /api/jobs`, `DELETE /api/jobs/:id`                          |
+| Responsibilities  | `GET/POST/PUT /api/responsibilities`, `DELETE /api/responsibilities/:id`  |
+| Skills            | `GET/POST/PUT /api/skills`, `DELETE /api/skills/:id`                      |
+| Certifications    | `GET/POST/PUT /api/certifications`, `DELETE /api/certifications/:id`      |
+| Awards            | `GET/POST/PUT /api/awards`, `DELETE /api/awards/:id`                      |
+| AI Suggestions    | `POST /api/ai/suggest` — body: `{ text, geminiKey, sectionType }`         |
 
 ---
 
-##  Accessibility
+## AI Usage Documentation
 
-* Designed with accessibility as a priority
-* Tested using Lighthouse
-* Target score: **93+**
-* Includes:
+A full write-up lives in [`docs/ai-usage.md`](./docs/ai-usage.md), including:
 
-  * Semantic HTML
-  * Keyboard navigation
-  * Color contrast compliance
+* Summary of how generative AI was used during development
+* The rules file (`AGENTS.md`) used to constrain AI-generated code
+* MCP server / tool details (if any)
+* Inline comments in the source where AI assistance was used
 
----
-
-##  Libraries & Attribution
-
-All external libraries are stored locally (no CDNs used).
-
-A “Thank You” section is included in the app to credit:
-
-* Bootstrap / Tailwind
-* Any additional libraries used
+The Gemini API is also a runtime feature: users paste their own key into the app's settings to receive content suggestions on entered details.
 
 ---
 
+## Environment & Security
+
+* Development secrets go in `.env`; `.env` is in `.gitignore`
+* No API key is committed or bundled with the application
+* User-provided Gemini keys are stored only in the local SQLite database on the user's machine
+* All SQL uses prepared statements (no string interpolation of user input)
+
+---
+
+## Accessibility
+
+* WCAG 2.1+ targets
+* Lighthouse Accessibility score target **≥ 93** (screenshot in `docs/lighthouse.png`)
+* Semantic HTML, keyboard navigation, color-contrast compliant theme, ARIA labels on form controls, alt text on images
+
+---
+
+## Libraries & Attribution
+
+All third-party libraries are stored locally — no CDNs.
+
+A "Credits" / "Thank You" modal inside the app credits each library used:
+
+* [Bootstrap 5](https://getbootstrap.com/)
+* [Popper.js](https://popper.js.org/) (Bootstrap dependency)
+* [Express](https://expressjs.com/)
+* [sqlite3](https://github.com/TryGhost/node-sqlite3)
+* [Google Generative AI SDK](https://github.com/google/generative-ai-js)
+* [Electron](https://www.electronjs.org/)
+
+---
+
+## Submission Checklist
+
+* [ ] All project files included
+* [ ] Public GitHub repository link: https://github.com/tgannod42/Resume-Builder
+* [ ] AI usage documentation (`docs/ai-usage.md`)
+* [ ] Example resume PDF generated by the app
+* [ ] Lighthouse accessibility screenshot (≥ 93)
+* [ ] Special install/run instructions (this README)
+* [ ] Statement on whether the project may be shared with future students
+* [ ] Candid or AI-generated author image
+
+---
 
 ## Author
 
 **Trey Gannod**
-
